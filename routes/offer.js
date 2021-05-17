@@ -165,35 +165,31 @@ router.put("/offer/update", isAuthentificated, async (req, res) => {
       // }
       //---
 
-      try {
-        const fileKeys = Object.keys(req.files);
+      // try {
+      const fileKeys = Object.keys(req.files);
+      console.log(oldDownloadImages);
+      console.log(fileKeys);
 
-        let counter = 0;
+      let counter = 0;
 
-        for (let i = 0; i < oldDownloadImages.length; i++) {
-          for (let j = 0; j < fileKeys.length; j++) {
-            if (oldDownloadImages[i] === fileKeys[j]) {
-              counter++;
+      for (let i = 0; i < oldDownloadImages.length; i++) {
+        for (let j = 0; j < fileKeys.length; j++) {
+          if (oldDownloadImages[i] === fileKeys[j]) {
+            counter++;
+            console.log(counter);
 
-              let file = req.files[fileKeys[j]];
+            let file = req.files[fileKeys[j]];
+            console.log(file.name);
 
-              let pictureToUpdate = await cloudinary.uploader.upload(
-                file.path,
-                {
-                  folder: `/vinted/offers/${offerToModify._id}`,
-                }
-              );
-              offerToModify.product_image[fileKeys[j]] = pictureToUpdate;
-            }
+            let pictureToUpdate = await cloudinary.uploader.upload(file.path, {
+              folder: `/vinted/offers/${offerToModify._id}`,
+            });
+            console.log(pictureToUpdate);
+            offerToModify.markModified("product_image");
+
+            offerToModify.product_image[fileKeys[j]] = pictureToUpdate;
           }
         }
-
-        if (counter === fileKeys.length) {
-          await offerToModify.save();
-          res.status(200).json(offerToModify);
-        }
-      } catch (error) {
-        res.status(400).json({ message: error.message });
       }
     }
 
