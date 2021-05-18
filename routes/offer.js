@@ -165,7 +165,6 @@ router.put("/offer/update", isAuthentificated, async (req, res) => {
       // }
       //---
 
-      // try {
       const fileKeys = Object.keys(req.files);
       console.log(oldDownloadImages);
       console.log(fileKeys);
