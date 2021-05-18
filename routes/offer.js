@@ -40,52 +40,52 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
         owner: req.user,
       });
 
-      // // Uploader image vers cloudinary
-      // const pictureToUpdate = await cloudinary.uploader.upload(
-      //   req.files.picture.path,
-      //   {
-      //     folder: `/vinted/offers/${newOffer._id}`,
-      //   }
-      // );
+      // Uploader image vers cloudinary
+      const pictureToUpdate = await cloudinary.uploader.upload(
+        req.files.picture.path,
+        {
+          folder: `/vinted/offers/${newOffer._id}`,
+        }
+      );
 
-      // // Ajouter la clé img
-      // newOffer.product_image = pictureToUpdate;
+      // Ajouter la clé img
+      newOffer.product_image = pictureToUpdate;
 
-      // // Enregistrement en BDD
-      // await newOffer.save();
+      // Enregistrement en BDD
+      await newOffer.save();
 
-      // //Envoie de la réponse au client
-      // res.status(200).json(newOffer);
+      //Envoie de la réponse au client
+      res.status(200).json(newOffer);
 
-      //---- boucle cloudinary
-      if (req.files) {
-        const fileKeys = Object.keys(req.files);
+      // //---- boucle cloudinary
+      // if (req.files) {
+      //   const fileKeys = Object.keys(req.files);
 
-        fileKeys.forEach(async (fileKey) => {
-          try {
-            const file = req.files[fileKey];
-            const pictureToUpdate = await cloudinary.uploader.upload(
-              file.path,
-              {
-                folder: `/vinted/offers/${newOffer._id}`,
-              }
-            );
-            newOffer.product_image[fileKey] = pictureToUpdate;
+      //   fileKeys.forEach(async (fileKey) => {
+      //     try {
+      //       const file = req.files[fileKey];
+      //       const pictureToUpdate = await cloudinary.uploader.upload(
+      //         file.path,
+      //         {
+      //           folder: `/vinted/offers/${newOffer._id}`,
+      //         }
+      //       );
+      //       newOffer.product_image[fileKey] = pictureToUpdate;
 
-            if (
-              Object.keys(newOffer.product_image).length === fileKeys.length
-            ) {
-              await newOffer.save();
-              res.status(200).json(newOffer);
-            }
-          } catch (error) {
-            res.status(400).json({ message: error.message });
-          }
-        });
-      } else {
-        await newOffer.save();
-        res.status(200).json(newOffer);
-      }
+      //       if (
+      //         Object.keys(newOffer.product_image).length === fileKeys.length
+      //       ) {
+      //         await newOffer.save();
+      //         res.status(200).json(newOffer);
+      //       }
+      //     } catch (error) {
+      //       res.status(400).json({ message: error.message });
+      //     }
+      //   });
+      // } else {
+      //   await newOffer.save();
+      //   res.status(200).json(newOffer);
+      // }
     } else {
       res
         .status(400)
@@ -152,44 +152,46 @@ router.put("/offer/update", isAuthentificated, async (req, res) => {
     offerToModify.markModified("product_details");
 
     if (req.files) {
-      // // Uploader une nouvelle image vers cloudinary
-      // const pictureToModify = await cloudinary.uploader.upload(
-      //   req.files.picture.path,
-      //   {
-      //     folder: `/vinted/offers/${offerToModify._id}`,
-      //   }
-      // );
-      // // modification de l'image
-      // if (pictureToModify) {
-      //   offerToModify.product_image = pictureToModify;
-      // }
-      //---
-
-      const fileKeys = Object.keys(req.files);
-      console.log(oldDownloadImages);
-      console.log(fileKeys);
-
-      let counter = 0;
-
-      for (let i = 0; i < oldDownloadImages.length; i++) {
-        for (let j = 0; j < fileKeys.length; j++) {
-          if (oldDownloadImages[i] === fileKeys[j]) {
-            counter++;
-            console.log(counter);
-
-            let file = req.files[fileKeys[j]];
-            console.log(file.name);
-
-            let pictureToUpdate = await cloudinary.uploader.upload(file.path, {
-              folder: `/vinted/offers/${offerToModify._id}`,
-            });
-            console.log(pictureToUpdate);
-            offerToModify.markModified("product_image");
-
-            offerToModify.product_image[fileKeys[j]] = pictureToUpdate;
-          }
+      // Uploader une nouvelle image vers cloudinary
+      const pictureToModify = await cloudinary.uploader.upload(
+        req.files.picture.path,
+        {
+          folder: `/vinted/offers/${offerToModify._id}`,
         }
+      );
+      // modification de l'image
+      if (pictureToModify) {
+        offerToModify.product_image = pictureToModify;
       }
+
+      // //---Modifier et uploader plusieurs images
+
+      // const fileKeys = Object.keys(req.files);
+      // console.log(oldDownloadImages);
+      // console.log(fileKeys);
+
+      // let counter = 0;
+
+      // for (let i = 0; i < oldDownloadImages.length; i++) {
+      //   for (let j = 0; j < fileKeys.length; j++) {
+      //     if (oldDownloadImages[i] === fileKeys[j]) {
+      //       counter++;
+      //       console.log(counter);
+
+      //       let file = req.files[fileKeys[j]];
+      //       console.log(file.name);
+
+      //       let pictureToUpdate = await cloudinary.uploader.upload(file.path, {
+      //         folder: `/vinted/offers/${offerToModify._id}`,
+      //       });
+      //       console.log(pictureToUpdate);
+      //       offerToModify.markModified("product_image");
+
+      //       offerToModify.product_image[fileKeys[j]] = pictureToUpdate;
+      //     }
+      //   }
+      // }
+      // //----------------------------
     }
 
     await offerToModify.save();
