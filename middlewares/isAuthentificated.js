@@ -2,7 +2,6 @@ const User = require("../models/User");
 
 const isAuthentificated = async (req, res, next) => {
   console.log("je rentre dans le middleware");
-
   try {
     if (req.headers.authorization) {
       const token = req.headers.authorization.replace("Bearer ", "");
