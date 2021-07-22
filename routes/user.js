@@ -51,11 +51,13 @@ router.post("/user/signup", async (req, res) => {
           salt: salt,
         });
 
-        const avatarToUpdate = await cloudinary.uploader.upload(
-          req.files.avatar.path,
-          { folder: `/vinted/avatar/${newUser._id}` }
-        );
-        newUser.account.avatar = avatarToUpdate;
+        if (req.files.avatar) {
+          const avatarToUpdate = await cloudinary.uploader.upload(req.files.avatar.path, {
+            folder: `/vinted/avatar/${newUser._id}`,
+          });
+          newUser.account.avatar = avatarToUpdate;
+        }
+
         // Envoie des infos à la BDD
         await newUser.save();
 
