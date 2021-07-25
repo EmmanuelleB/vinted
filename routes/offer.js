@@ -11,8 +11,7 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
   console.log("Félicitation tu es authentifié(e)");
 
   try {
-    const { title, description, price, condition, city, brand, size, color } =
-      req.fields;
+    const { title, description, price, condition, city, brand, size, color } = req.fields;
 
     if (title && price && req.files.picture.path) {
       const newOffer = new Offer({
@@ -41,12 +40,9 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
       });
 
       // Uploader image vers cloudinary
-      const pictureToUpdate = await cloudinary.uploader.upload(
-        req.files.picture.path,
-        {
-          folder: `/vinted/offers/${newOffer._id}`,
-        }
-      );
+      const pictureToUpdate = await cloudinary.uploader.upload(req.files.picture.path, {
+        folder: `/vinted/offers/${newOffer._id}`,
+      });
 
       // Ajouter la clé img
       newOffer.product_image = pictureToUpdate;
@@ -87,9 +83,7 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
       //   res.status(200).json(newOffer);
       // }
     } else {
-      res
-        .status(400)
-        .json({ message: "Title, Price and Picture are required" });
+      res.status(400).json({ message: "Title, Price and Picture are required" });
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -100,8 +94,7 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
 
 router.put("/offer/update", isAuthentificated, async (req, res) => {
   try {
-    const { title, description, price, condition, city, brand, size, color } =
-      req.fields;
+    const { title, description, price, condition, city, brand, size, color } = req.fields;
 
     const offerToModify = await Offer.findById(req.fields._id);
     const oldDownloadImages = Object.keys(offerToModify.product_image);
@@ -153,12 +146,9 @@ router.put("/offer/update", isAuthentificated, async (req, res) => {
 
     if (req.files) {
       // Uploader une nouvelle image vers cloudinary
-      const pictureToModify = await cloudinary.uploader.upload(
-        req.files.picture.path,
-        {
-          folder: `/vinted/offers/${offerToModify._id}`,
-        }
-      );
+      const pictureToModify = await cloudinary.uploader.upload(req.files.picture.path, {
+        folder: `/vinted/offers/${offerToModify._id}`,
+      });
       // modification de l'image
       if (pictureToModify) {
         offerToModify.product_image = pictureToModify;
@@ -264,8 +254,7 @@ router.get("/offers", async (req, res) => {
       .sort(sort)
       .limit(offersByPage)
       .skip(hiddenOffers)
-      .populate("owner", "account")
-      .select("_id product_name product_price");
+      .populate("owner", "account");
 
     const count = await Offer.countDocuments(filters);
 
@@ -282,10 +271,7 @@ router.get("/offers", async (req, res) => {
 
 router.get("/offer/:id", async (req, res) => {
   try {
-    const offer = await Offer.findById(req.params.id).populate(
-      "owner",
-      "account"
-    );
+    const offer = await Offer.findById(req.params.id).populate("owner", "account");
     await offer.save();
     res.status(200).json(offer);
   } catch (error) {
