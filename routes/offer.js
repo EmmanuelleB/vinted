@@ -241,7 +241,7 @@ router.get("/offers", async (req, res) => {
       }
     }
 
-    let offersByPage = Number(req.query.offersByPage) || 4;
+    let offersByPage = Number(req.query.offersByPage) || 20;
     let page = Number(req.query.page);
 
     if (page === 1 || !page) {
