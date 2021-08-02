@@ -13,7 +13,7 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
   try {
     const { title, description, price, condition, city, brand, size, color } = req.fields;
 
-    if (title && price && req.files.picture.path) {
+    if (title && price && req.files) {
       const newOffer = new Offer({
         product_name: title,
         product_description: description,
@@ -39,8 +39,9 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
         owner: req.user,
       });
 
-      //UPLOAD 1 IMAGE
-      // if (req.files >= 0 && req.files < 1) {
+      // // UPLOAD 1 IMAGE
+
+      //   console.log("boucle1");
       //   // Uploader image vers cloudinary
       //   const pictureToUpdate = await cloudinary.uploader.upload(req.files.picture.path, {
       //     folder: `/vinted/offers/${newOffer._id}`,
@@ -54,50 +55,31 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
 
       //   //Envoie de la réponse au client
       //   res.status(200).json(newOffer);
-      // }
 
-      //UPLOAD PLUSIEURS IMAGES
-      // if (req.files > 0 && req.files < 5) {
-      //   const fileKeys = Object.keys(req.files);
-
-      //   fileKeys.forEach(async (fileKey) => {
-      //     try {
-      //       const file = req.files[fileKey];
-      //       const pictureToUpdate = await cloudinary.uploader.upload(file.path, {
-      //         folder: `/vinted/offers/${newOffer._id}`,
-      //       });
-      //       newOffer.product_image[fileKey] = pictureToUpdate;
-
-      //       if (Object.keys(newOffer.product_image).length === fileKeys.length) {
-      //         await newOffer.save();
-      //         res.status(200).json(newOffer);
-      //       }
-      //     } catch (error) {
-      //       res.status(400).json({ message: error.message });
-      //     }
-      //   });
-      // }
-
+      // UPLOAD PLUSIEUS IMAGES
       //---- boucle cloudinary
       if (req.files) {
         const fileKeys = Object.keys(req.files);
+        if (fileKeys.length >= 0 && fileKeys.length < 5) {
+          fileKeys.forEach(async (fileKey) => {
+            try {
+              const file = req.files[fileKey];
+              const pictureToUpdate = await cloudinary.uploader.upload(file.path, {
+                folder: `/vinted/offers/${newOffer._id}`,
+              });
+              newOffer.product_image[fileKey] = pictureToUpdate;
 
-        fileKeys.forEach(async (fileKey) => {
-          try {
-            const file = req.files[fileKey];
-            const pictureToUpdate = await cloudinary.uploader.upload(file.path, {
-              folder: `/vinted/offers/${newOffer._id}`,
-            });
-            newOffer.product_image[fileKey] = pictureToUpdate;
-
-            if (Object.keys(newOffer.product_image).length === fileKeys.length) {
-              await newOffer.save();
-              res.status(200).json(newOffer);
+              if (Object.keys(newOffer.product_image).length === fileKeys.length) {
+                await newOffer.save();
+                res.status(200).json(newOffer);
+              }
+            } catch (error) {
+              res.status(400).json({ message: error.message });
             }
-          } catch (error) {
-            res.status(400).json({ message: error.message });
-          }
-        });
+          });
+        } else {
+          res.status(400).json({ message: "5 photos maximum" });
+        }
       } else {
         await newOffer.save();
         res.status(200).json(newOffer);
