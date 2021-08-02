@@ -57,7 +57,29 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
       // }
 
       //UPLOAD PLUSIEURS IMAGES
-      if (req.files > 0 && req.files < 5) {
+      // if (req.files > 0 && req.files < 5) {
+      //   const fileKeys = Object.keys(req.files);
+
+      //   fileKeys.forEach(async (fileKey) => {
+      //     try {
+      //       const file = req.files[fileKey];
+      //       const pictureToUpdate = await cloudinary.uploader.upload(file.path, {
+      //         folder: `/vinted/offers/${newOffer._id}`,
+      //       });
+      //       newOffer.product_image[fileKey] = pictureToUpdate;
+
+      //       if (Object.keys(newOffer.product_image).length === fileKeys.length) {
+      //         await newOffer.save();
+      //         res.status(200).json(newOffer);
+      //       }
+      //     } catch (error) {
+      //       res.status(400).json({ message: error.message });
+      //     }
+      //   });
+      // }
+
+      //---- boucle cloudinary
+      if (req.files) {
         const fileKeys = Object.keys(req.files);
 
         fileKeys.forEach(async (fileKey) => {
@@ -76,37 +98,10 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
             res.status(400).json({ message: error.message });
           }
         });
+      } else {
+        await newOffer.save();
+        res.status(200).json(newOffer);
       }
-
-      // //---- boucle cloudinary
-      // if (req.files) {
-      //   const fileKeys = Object.keys(req.files);
-
-      //   fileKeys.forEach(async (fileKey) => {
-      //     try {
-      //       const file = req.files[fileKey];
-      //       const pictureToUpdate = await cloudinary.uploader.upload(
-      //         file.path,
-      //         {
-      //           folder: `/vinted/offers/${newOffer._id}`,
-      //         }
-      //       );
-      //       newOffer.product_image[fileKey] = pictureToUpdate;
-
-      //       if (
-      //         Object.keys(newOffer.product_image).length === fileKeys.length
-      //       ) {
-      //         await newOffer.save();
-      //         res.status(200).json(newOffer);
-      //       }
-      //     } catch (error) {
-      //       res.status(400).json({ message: error.message });
-      //     }
-      //   });
-      // } else {
-      //   await newOffer.save();
-      //   res.status(200).json(newOffer);
-      // }
     } else {
       res.status(400).json({ message: "Title, Price and Picture are required" });
     }
