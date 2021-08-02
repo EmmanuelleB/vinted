@@ -39,7 +39,7 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
         owner: req.user,
       });
 
-      if (req.files >= 0 && req.files < 1) {
+      if (req.files.length >= 0 && req.files.length < 1) {
         // Uploader image vers cloudinary
         const pictureToUpdate = await cloudinary.uploader.upload(req.files.picture.path, {
           folder: `/vinted/offers/${newOffer._id}`,
@@ -54,26 +54,26 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
         //Envoie de la réponse au client
         res.status(200).json(newOffer);
       }
-      if (req.files >= 1 && req.files < 5) {
-        const fileKeys = Object.keys(req.files);
+      // if (req.files >= 1 && req.files < 5) {
+      //   const fileKeys = Object.keys(req.files);
 
-        fileKeys.forEach(async (fileKey) => {
-          try {
-            const file = req.files[fileKey];
-            const pictureToUpdate = await cloudinary.uploader.upload(file.path, {
-              folder: `/vinted/offers/${newOffer._id}`,
-            });
-            newOffer.product_image[fileKey] = pictureToUpdate;
+      //   fileKeys.forEach(async (fileKey) => {
+      //     try {
+      //       const file = req.files[fileKey];
+      //       const pictureToUpdate = await cloudinary.uploader.upload(file.path, {
+      //         folder: `/vinted/offers/${newOffer._id}`,
+      //       });
+      //       newOffer.product_image[fileKey] = pictureToUpdate;
 
-            if (Object.keys(newOffer.product_image).length === fileKeys.length) {
-              await newOffer.save();
-              res.status(200).json(newOffer);
-            }
-          } catch (error) {
-            res.status(400).json({ message: error.message });
-          }
-        });
-      }
+      //       if (Object.keys(newOffer.product_image).length === fileKeys.length) {
+      //         await newOffer.save();
+      //         res.status(200).json(newOffer);
+      //       }
+      //     } catch (error) {
+      //       res.status(400).json({ message: error.message });
+      //     }
+      //   });
+      // }
 
       // //---- boucle cloudinary
       // if (req.files) {
