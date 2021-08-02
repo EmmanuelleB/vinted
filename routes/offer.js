@@ -39,21 +39,21 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
         owner: req.user,
       });
 
-      if (req.files.length >= 0 && req.files.length < 1) {
-        // Uploader image vers cloudinary
-        const pictureToUpdate = await cloudinary.uploader.upload(req.files.picture.path, {
-          folder: `/vinted/offers/${newOffer._id}`,
-        });
+      // if (req.files >= 0 && req.files < 1) {
+      // Uploader image vers cloudinary
+      const pictureToUpdate = await cloudinary.uploader.upload(req.files.picture.path, {
+        folder: `/vinted/offers/${newOffer._id}`,
+      });
 
-        // Ajouter la clé img
-        newOffer.product_image = pictureToUpdate;
+      // Ajouter la clé img
+      newOffer.product_image = pictureToUpdate;
 
-        // Enregistrement en BDD
-        await newOffer.save();
+      // Enregistrement en BDD
+      await newOffer.save();
 
-        //Envoie de la réponse au client
-        res.status(200).json(newOffer);
-      }
+      //Envoie de la réponse au client
+      res.status(200).json(newOffer);
+      // }
       // if (req.files >= 1 && req.files < 5) {
       //   const fileKeys = Object.keys(req.files);
 
