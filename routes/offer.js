@@ -39,47 +39,49 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
         owner: req.user,
       });
 
-      // // Uploader image vers cloudinary
-      // const pictureToUpdate = await cloudinary.uploader.upload(req.files.picture.path, {
-      //   folder: `/vinted/offers/${newOffer._id}`,
-      // });
+      // Uploader image vers cloudinary
+      const pictureToUpdate = await cloudinary.uploader.upload(req.files.picture.path, {
+        folder: `/vinted/offers/${newOffer._id}`,
+      });
 
-      // // Ajouter la clé img
-      // newOffer.product_image = pictureToUpdate;
+      // Ajouter la clé img
+      newOffer.product_image = pictureToUpdate;
 
-      // // Enregistrement en BDD
-      // await newOffer.save();
+      // Enregistrement en BDD
+      await newOffer.save();
 
-      // //Envoie de la réponse au client
-      // res.status(200).json(newOffer);
+      //Envoie de la réponse au client
+      res.status(200).json(newOffer);
 
-      //---- boucle cloudinary
-      if (req.files) {
-        const fileKeys = Object.keys(req.files);
-        if (fileKeys.length >= 0 && fileKeys.length < 5) {
-          fileKeys.forEach(async (fileKey) => {
-            try {
-              const file = req.files[fileKey];
+      // //---- boucle cloudinary
+      // if (req.files) {
+      //   const fileKeys = Object.keys(req.files);
 
-              const pictureToUpdate = await cloudinary.uploader.upload(file.path, {
-                folder: `/vinted/offers/${newOffer._id}`,
-              });
+      //   fileKeys.forEach(async (fileKey) => {
+      //     try {
+      //       const file = req.files[fileKey];
+      //       const pictureToUpdate = await cloudinary.uploader.upload(
+      //         file.path,
+      //         {
+      //           folder: `/vinted/offers/${newOffer._id}`,
+      //         }
+      //       );
+      //       newOffer.product_image[fileKey] = pictureToUpdate;
 
-              newOffer.product_image[fileKey] = pictureToUpdate;
-
-              if (Object.keys(newOffer.product_image).length === fileKeys.length) {
-                await newOffer.save();
-                res.status(200).json(newOffer);
-              }
-            } catch (error) {
-              res.status(400).json({ message: error.message });
-            }
-          });
-        }
-      } else {
-        await newOffer.save();
-        res.status(200).json(newOffer);
-      }
+      //       if (
+      //         Object.keys(newOffer.product_image).length === fileKeys.length
+      //       ) {
+      //         await newOffer.save();
+      //         res.status(200).json(newOffer);
+      //       }
+      //     } catch (error) {
+      //       res.status(400).json({ message: error.message });
+      //     }
+      //   });
+      // } else {
+      //   await newOffer.save();
+      //   res.status(200).json(newOffer);
+      // }
     } else {
       res.status(400).json({ message: "Title, Price and Picture are required" });
     }
