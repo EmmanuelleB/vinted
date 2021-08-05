@@ -26,6 +26,9 @@ app.use(userRoutes);
 const offerRoutes = require("./routes/offer");
 app.use(offerRoutes);
 
+const offerRoutes = require("./routes/payment");
+app.use(offerRoutes);
+
 app.get("/", async (req, res) => {
   res.status(200).json({ message: "Test" });
 });
