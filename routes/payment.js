@@ -19,7 +19,7 @@ router.post("/payment", isAuthentificated, async (req, res) => {
       source: stripeToken,
     });
     console.log("response.status : ===> " + response.status);
-    res.json("coucou");
+    res.json({ message: "Coucou" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
