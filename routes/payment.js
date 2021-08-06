@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const isAuthentificated = require("../middlewares/isAuthentificated");
+require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_API_KEY);
 
 router.post("/payment", isAuthentificated, async (req, res) => {
