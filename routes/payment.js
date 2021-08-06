@@ -10,7 +10,7 @@ router.post("/payment", isAuthentificated, async (req, res) => {
   try {
     const stripeToken = req.fields.stripeToken;
 
-    console.log("stripeToken : ===> " + stripeToken);
+    console.log(stripeToken);
 
     const response = await stripe.charges.create({
       amount: 2000,
@@ -19,8 +19,10 @@ router.post("/payment", isAuthentificated, async (req, res) => {
       // On envoie ici le token
       source: stripeToken,
     });
+    console.log("response: ===> " + response);
     console.log("response.status : ===> " + response.status);
-    res.json({ message: "Coucou" });
+    // mise à jour BDD
+    res.json(response);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
