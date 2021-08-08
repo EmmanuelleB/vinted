@@ -9,18 +9,19 @@ router.post("/payment", isAuthentificated, async (req, res) => {
 
   try {
     const stripeToken = req.fields.stripeToken;
+    const price = req.fields.price;
+    const title = req.fields.title;
 
     console.log(stripeToken);
 
     const response = await stripe.charges.create({
-      amount: 2000,
+      amount: req.fields.price,
       currency: "eur",
-      description: "La description de l'objet acheté",
+      description: req.fields.title,
       // On envoie ici le token
       source: stripeToken,
     });
-    console.log("response: ===> " + response);
-    console.log("response.status : ===> " + response.status);
+
     // mise à jour BDD
     res.json(response);
   } catch (error) {
