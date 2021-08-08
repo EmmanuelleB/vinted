@@ -9,17 +9,17 @@ router.post("/payment", isAuthentificated, async (req, res) => {
 
   try {
     const stripeToken = req.fields.stripeToken;
-    const price = req.fields.price;
-    const title = req.fields.title;
+    // const price = req.fields.price;
+    // const title = req.fields.title;
 
-    console.log(stripeToken);
-    console.log(price);
-    console.log(title);
+    // console.log(stripeToken);
+    // console.log(price);
+    // console.log(title);
 
     const response = await stripe.charges.create({
-      amount: price,
+      amount: "1000",
       currency: "eur",
-      description: title,
+      description: "description produit",
       // On envoie ici le token
       source: stripeToken,
     });
