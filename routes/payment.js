@@ -12,8 +12,8 @@ router.post("/payment", isAuthentificated, async (req, res) => {
     const price = req.fields.price;
     // const title = req.fields.title;
 
-    // console.log(stripeToken);
-    // console.log(price);
+    console.log(stripeToken);
+    console.log(price);
     // console.log(title);
 
     const response = await stripe.charges.create({
